@@ -14,6 +14,7 @@ const Review=require("./models/review.js")
 const  listing   =require("./routes/listing.js")
 const review =require("./routes/review.js");
 const session=require("express-session");
+const flash =require("connect-flash");
 
 
 
@@ -40,6 +41,9 @@ async function main(){
 app.listen(port),()=>{
     console.log("server started");
 }
+app.get("/",(req,res)=>{
+    res.send("hi i am root");
+})
 
 const sessionOption ={
    secret:"mysecret",
@@ -53,9 +57,11 @@ const sessionOption ={
 };
 
 app.use(session(sessionOption));
-
-app.get("/",(req,res)=>{
-    res.send("hi i am root");
+app.use(flash());
+app.use((req,res,next)=>{
+   res.locals.success=req.flash("success");
+   res.locals.error=req.flash("error");
+   next();
 })
 
 app.use("/listings",listing);
