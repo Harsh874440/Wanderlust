@@ -13,6 +13,9 @@ const{Schema} =require("./schema.js")
 const Review=require("./models/review.js")
 const  listing   =require("./routes/listing.js")
 const review =require("./routes/review.js");
+const session=require("express-session");
+
+
 
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname,"views"));
@@ -38,6 +41,19 @@ app.listen(port),()=>{
     console.log("server started");
 }
 
+const sessionOption ={
+   secret:"mysecret",
+   resave:false,
+   saveUninitialized:true,
+   cookie:{
+      expires:Date.now() + 7 * 24 * 60 * 60 * 1000,
+      maxAge:7 * 24 * 60 * 60 * 1000,
+      httpOnly:true,
+   }
+};
+
+app.use(session(sessionOption));
+
 app.get("/",(req,res)=>{
     res.send("hi i am root");
 })
@@ -58,7 +74,7 @@ app.use((err,req,res,next)=>{
       status=500,
       message,
    }=err;
-res.render("error.ejs",{message,err});
+res.render("error.ejs",{message,err}); 
 })
 
 
