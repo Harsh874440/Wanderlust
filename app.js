@@ -15,6 +15,10 @@ const  listing   =require("./routes/listing.js")
 const review =require("./routes/review.js");
 const session=require("express-session");
 const flash =require("connect-flash");
+const passport=require("passport");
+const LocalStatergy =require("passport-local").Strategy;
+const User =require("./models/user.js");
+const user =require("./routes/user.js");
 
 
 
@@ -58,6 +62,23 @@ const sessionOption ={
 
 app.use(session(sessionOption));
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStatergy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+/*app.get("/demoUser" ,async(req,res)=>{
+  let fackUser =  new User({
+   email:"abc@gmail.com",
+   username:"Harsh",*/
+
+  //});
+  /*let registeredUser= await User.register(fackUser,"helloworld");
+  res.send(registeredUser); 
+})*/
+
 app.use((req,res,next)=>{
    res.locals.success=req.flash("success");
    res.locals.error=req.flash("error");
@@ -66,6 +87,12 @@ app.use((req,res,next)=>{
 
 app.use("/listings",listing);
 app.use("/listings",review);
+app.use("/",user);
+
+
+
+   
+
 
 app.get("/random",(req,res,next)=>{
    next(new expressError(404,"page not found"));
