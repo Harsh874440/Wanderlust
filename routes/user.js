@@ -4,6 +4,7 @@ const wrapAsync=require("../utils/wrapAsybc.js");
 const expressError=require("../utils/expressError.js");
 const Listing=require("../models/listing.js");
 const User =require("../models/user.js");
+const passport=require("passport");
 
 
 router.get("/signup",async(req,res)=>{
@@ -27,6 +28,16 @@ let {username ,email ,password } =req.body;
     
 })
 );
+router.get("/login",async(req,res)=>{
+    res.render("login.ejs");
+})
+router.post("/login",
+    passport.authenticate("local",{faliureRedirect:"/login"}),
+    async (req,res)=>{
+res.send("welcolme back to wanderlust you are logedin ");
+    }
+)
+
 
 
 module.exports=router;
