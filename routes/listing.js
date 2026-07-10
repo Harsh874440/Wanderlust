@@ -4,6 +4,7 @@ const wrapAsync=require("../utils/wrapAsybc.js");
 const expressError=require("../utils/expressError.js");
 const Listing=require("../models/listing.js");
 const {isLoggedIn} =require("../middleware.js");
+const {saveRedirectUrl} =require("../middleware.js");
 //index rout
 router.get("/",wrapAsync (  async (req,res)=>{
     let allListing=await Listing.find({});

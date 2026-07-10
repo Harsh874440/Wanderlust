@@ -5,7 +5,8 @@ const expressError=require("../utils/expressError.js");
 const Listing=require("../models/listing.js");
 const User =require("../models/user.js");
 const passport=require("passport");
-
+const {isLoggedIn} =require("../middleware.js");
+const {saveRedirectUrl} =require("../middleware.js");
 
 router.get("/signup",async(req,res)=>{
     res.render("signup.ejs");
@@ -38,10 +39,12 @@ router.get("/login",async(req,res)=>{
     res.render("login.ejs");
 })
 router.post("/login",
+    saveRedirectUrl,
     passport.authenticate("local",{faliureRedirect:"/login"}),
     async (req,res)=>{
         req.flash("success","you are logged in ");
-     res.redirect("/listings");
+        let redirectUrl =res.locals.redirectUrl || "/listings" ;
+     res.redirect(redirectUrl);
     }
 )
 
