@@ -3,6 +3,7 @@ const router = express.Router();
 const wrapAsync=require("../utils/wrapAsybc.js");
 const expressError=require("../utils/expressError.js");
 const Listing=require("../models/listing.js");
+const {isLoggedIn} =require("../middleware.js");
 //index rout
 router.get("/",wrapAsync (  async (req,res)=>{
     let allListing=await Listing.find({});
@@ -10,9 +11,11 @@ router.get("/",wrapAsync (  async (req,res)=>{
 })
 );
 
-router.get("/new", wrapAsync ( async (req,res)=>{
+router.get("/new", isLoggedIn ,wrapAsync ( async (req,res)=>{
 
 res.render("new.ejs");
+
+
    
 })
 );
@@ -29,7 +32,7 @@ router.get("/:id",wrapAsync (  async (req, res) => {
 })
 );
 
-router.post("/",wrapAsync ( async (req,res,next)=>{
+router.post("/", isLoggedIn ,wrapAsync ( async (req,res,next)=>{
 
    
 let {title,description,image,price,location,country} =req.body;
@@ -42,7 +45,7 @@ let {title,description,image,price,location,country} =req.body;
 })
 );
 
-router.get("/:id/edit", wrapAsync ( async (req,res)=>{
+router.get("/:id/edit",  isLoggedIn ,wrapAsync ( async (req,res)=>{
     let {id}=req.params;
    let listing= await Listing.findById(id);
    if(!listing){
@@ -53,7 +56,7 @@ router.get("/:id/edit", wrapAsync ( async (req,res)=>{
 })
 );
 
-router.patch("/:id", wrapAsync ( async (req,res)=>{
+router.patch("/:id", isLoggedIn , wrapAsync ( async (req,res)=>{
 
   
   let {id}=req.params;
@@ -87,7 +90,7 @@ router.patch("/:id", wrapAsync ( async (req,res)=>{
 
    
 
-router.delete("/:id", wrapAsync ( async(req,res)=>{
+router.delete("/:id", isLoggedIn , wrapAsync ( async(req,res)=>{
    let {id} =req.params;
   let deleted= await Listing.findByIdAndDelete(id);
   console.log(deleted);

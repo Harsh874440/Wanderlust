@@ -34,7 +34,8 @@ router.get("/login",async(req,res)=>{
 router.post("/login",
     passport.authenticate("local",{faliureRedirect:"/login"}),
     async (req,res)=>{
-res.send("welcolme back to wanderlust you are logedin ");
+        req.flash("success","you are logged in ");
+     res.redirect("/listings");
     }
 )
 
