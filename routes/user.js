@@ -18,8 +18,14 @@ let {username ,email ,password } =req.body;
    let newUser= new User({username,email});
     await User.register(newUser,password);
     console.log(newUser);
-       req.flash("success","new User registered");
+    req.login(newUser,(err)=>{
+        if(err){
+        return    next(err);
+        }
+        req.flash("success","new User registered");
     res.redirect("listings");
+    })
+       
     }
     catch(err){
         req.flash("error", "similar user exist");
