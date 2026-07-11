@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const Schema = mongoose.Schema;
 const Review =require("./review.js")
+const User =require("./user.js")
 async function main(){
        await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
  
@@ -34,7 +35,12 @@ async function main(){
         type: Schema.Types.ObjectId,
         ref:"Review",
       }
-    ]
+    ],
+
+    owner:{
+     type:Schema.Types.ObjectId,
+     ref:"User",
+    }
       
     
   })
