@@ -4,14 +4,18 @@ const wrapAsync=require("../utils/wrapAsybc.js");
 const expressError=require("../utils/expressError.js");
 const Review=require("../models/review.js")
 const Listing=require("../models/listing.js");
+const {isLoggedIn} =require("../middleware.js");
+const {saveRedirectUrl} =require("../middleware.js");
+const {isUser} =require("../middleware.js");
 
 
 
-router.post("/:id/reviews", wrapAsync (async(req,res)=>{
+router.post("/:id/reviews",isLoggedIn ,isUser, wrapAsync (async(req,res)=>{
   let {id} =req.params ;
   let {rating,comment} =req.body;
   const listing=  await Listing.findById(id);
   const newRev=new Review({comment,rating});
+  newRev.author=req.user._id;
  listing.reviews.push(newRev);
    await newRev.save();
    await listing.save();
