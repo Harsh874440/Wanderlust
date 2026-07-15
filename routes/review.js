@@ -7,10 +7,11 @@ const Listing=require("../models/listing.js");
 const {isLoggedIn} =require("../middleware.js");
 const {saveRedirectUrl} =require("../middleware.js");
 const {isUser} =require("../middleware.js");
+const {isAuthor} =require("../middleware.js");
 
 
 
-router.post("/:id/reviews",isLoggedIn ,isUser, wrapAsync (async(req,res)=>{
+router.post("/:id/reviews",isLoggedIn , wrapAsync (async(req,res)=>{
   let {id} =req.params ;
   let {rating,comment} =req.body;
   const listing=  await Listing.findById(id);
@@ -25,7 +26,7 @@ res.redirect("/listings");
 })
 );
 
-router.delete("/:id/reviews/:reviewid" , async(req,res)=>{
+router.delete("/:id/reviews/:reviewid" ,isAuthor , async(req,res)=>{
    let {id ,reviewid} =req.params;
    console.log(id);
    await Listing.findByIdAndUpdate(id, {$pull :{reviews:reviewid}})
