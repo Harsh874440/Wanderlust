@@ -1,0 +1,26 @@
+const Review=require("../models/review.js");
+const Listing=require("../models/listing.js");
+
+module.exports.postReview=async(req,res)=>{
+  let {id} =req.params ;
+  let {rating,comment} =req.body;
+  const listing=  await Listing.findById(id);
+  const newRev=new Review({comment,rating});
+  newRev.author=req.user._id;
+ listing.reviews.push(newRev);
+   await newRev.save();
+   await listing.save();
+console.log(listing);
+req.flash("success","New review addedd");
+res.redirect("/listings");
+}
+
+module.exports.reviewDelete=async(req,res)=>{
+   let {id ,reviewid} =req.params;
+   console.log(id);
+   await Listing.findByIdAndUpdate(id, {$pull :{reviews:reviewid}})
+   await Review.findByIdAndDelete(reviewid);
+   req.flash("success"," review deleted");
+
+   res.redirect(`/listings/${id}`);
+}

@@ -8,32 +8,13 @@ const {isLoggedIn} =require("../middleware.js");
 const {saveRedirectUrl} =require("../middleware.js");
 const {isUser} =require("../middleware.js");
 const {isAuthor} =require("../middleware.js");
+const listingControllers =require("../controlle/review.js");
 
 
 
-router.post("/:id/reviews",isLoggedIn , wrapAsync (async(req,res)=>{
-  let {id} =req.params ;
-  let {rating,comment} =req.body;
-  const listing=  await Listing.findById(id);
-  const newRev=new Review({comment,rating});
-  newRev.author=req.user._id;
- listing.reviews.push(newRev);
-   await newRev.save();
-   await listing.save();
-console.log(listing);
-req.flash("success","New review addedd");
-res.redirect("/listings");
-})
+router.post("/:id/reviews",isLoggedIn , wrapAsync (listingControllers.postReview)
 );
 
-router.delete("/:id/reviews/:reviewid" ,isAuthor , async(req,res)=>{
-   let {id ,reviewid} =req.params;
-   console.log(id);
-   await Listing.findByIdAndUpdate(id, {$pull :{reviews:reviewid}})
-   await Review.findByIdAndDelete(reviewid);
-   req.flash("success"," review deleted");
-
-   res.redirect(`/listings/${id}`);
-})
+router.delete("/:id/reviews/:reviewid" ,isAuthor , wrapAsync(listingControllers.reviewDelete))
 module.exports=router;
 
